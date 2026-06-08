@@ -8,6 +8,34 @@
 </head>
 <body>
     <h1>Игра Змейка</h1>
+
+    <div id="controls">
+        <div class="control-group">
+            <label for="snake-speed">Скорость:</label>
+            <input type="range" id="snake-speed" min="50" max="500" value="150">
+            <span id="snake-speed-value">150 мс</span>
+        </div>
+
+        <div class="control-group">
+            <label for="snake-color">Цвет змейки:</label>
+            <input type="color" id="snake-color" value="#8FBC8F"> <!-- DarkSeaGreen -->
+        </div>
+
+        <div class="control-group">
+            <label for="food-color">Цвет еды:</label>
+            <input type="color" id="food-color" value="#FF6347"> <!-- Tomato -->
+        </div>
+
+        <div class="control-group">
+            <label for="field-size">Размер поля (клеток):</label>
+            <select id="field-size">
+                <option value="20">20x20</option>
+                <option value="25" selected>25x25</option>
+                <option value="30">30x30</option>
+            </select>
+        </div>
+    </div>
+
     <div id="game-container">
         <canvas id="game-canvas"></canvas>
         <div id="score">Очки: 0</div>

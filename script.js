@@ -2,13 +2,15 @@ const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 
-const gridSize = 20;
-const canvasSize = 400;
 
-canvas.width = canvasSize;
-canvas.height = canvasSize;
+const snakeSpeedInput = document.getElementById('snake-speed');
+const snakeSpeedValueSpan = document.getElementById('snake-speed-value');
+const snakeColorInput = document.getElementById('snake-color');
+const foodColorInput = document.getElementById('food-color');
+const fieldSizeInput = document.getElementById('field-size');
 
-const snakeSpeed = 150;
+let gridSize = 20;
+let canvasSize = 400;
 
 let snake = [{ x: 10, y: 10 }];
 let food = { x: 15, y: 15 };
@@ -17,24 +19,39 @@ let dy = 0;
 let score = 0;
 let changingDirection = false;
 
+let snakeSpeed = 150; 
+let snakeColor = '#8FBC8F';
+let foodColor = '#FF6347';
+let currentFieldSize = 25;
+
+
+function initializeGameDimensions() {
+    canvas.width = currentFieldSize * gridSize;
+    canvas.height = currentFieldSize * gridSize;
+    snake = [{ x: Math.floor(currentFieldSize / 2), y: Math.floor(currentFieldSize / 2) }];
+    generateFood();
+}
+
+let gameInterval;
+
 function mainGameLoop() {
-    setTimeout(() => {
+    if (gameInterval) {
+        clearInterval(gameInterval);
+    }
+
+    gameInterval = setInterval(() => {
         changingDirection = false;
         clearCanvas();
         drawFood();
         moveSnake();
         drawSnake();
 
-       
         if (checkCollision()) {
             gameOver();
             return;
         }
-
-        mainGameLoop();
     }, snakeSpeed);
 }
-
 
 function clearCanvas() {
     ctx.fillStyle = '#e9e9e9';
@@ -44,7 +61,7 @@ function clearCanvas() {
 }
 
 function drawSnake() {
-    ctx.fillStyle = 'lightgreen';
+    ctx.fillStyle = snakeColor;
     ctx.strokeStyle = 'darkgreen';
     snake.forEach(segment => {
         ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
@@ -53,12 +70,11 @@ function drawSnake() {
 }
 
 function drawFood() {
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = foodColor;
     ctx.strokeStyle = 'darkred';
     ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
     ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
 }
-
 
 function moveSnake() {
     const head = { x: snake[0].x + dx, y: snake[0].y + dy };
@@ -76,8 +92,8 @@ function moveSnake() {
 
 function generateFood() {
     while (true) {
-        food.x = Math.floor(Math.random() * (canvas.width / gridSize));
-        food.y = Math.floor(Math.random() * (canvas.height / gridSize));
+        food.x = Math.floor(Math.random() * currentFieldSize);
+        food.y = Math.floor(Math.random() * currentFieldSize);
 
         let collisionWithSnake = false;
         for (let i = 0; i < snake.length; i++) {
@@ -108,29 +124,24 @@ function changeDirection(event) {
     const goingRight = dx === 1;
 
     if (keyPressed === LEFT_KEY && !goingRight) {
-        dx = -1;
-        dy = 0;
+        dx = -1; dy = 0;
     }
     if (keyPressed === UP_KEY && !goingDown) {
-        dx = 0;
-        dy = -1;
+        dx = 0; dy = -1;
     }
     if (keyPressed === RIGHT_KEY && !goingLeft) {
-        dx = 1;
-        dy = 0;
+        dx = 1; dy = 0;
     }
     if (keyPressed === DOWN_KEY && !goingUp) {
-        dx = 0;
-        dy = 1;
+        dx = 0; dy = 1;
     }
 }
 
 function checkCollision() {
     const hitLeftWall = snake[0].x < 0;
-    const hitRightWall = snake[0].x >= canvas.width / gridSize;
+    const hitRightWall = snake[0].x >= currentFieldSize;
     const hitTopWall = snake[0].y < 0;
-    const hitBottomWall = snake[0].y >= canvas.height / gridSize;
-
+    const hitBottomWall = snake[0].y >= currentFieldSize;
     if (hitLeftWall || hitRightWall || hitTopWall || hitBottomWall) {
         return true;
     }
@@ -146,14 +157,42 @@ function checkCollision() {
 
 function gameOver() {
     alert(`Игра окончена! Ваш счет: ${score}`);
-    snake = [{ x: 10, y: 10 }];
-    dx = 0;
-    dy = 0;
     score = 0;
     scoreDisplay.textContent = `Очки: ${score}`;
+    dx = 0;
+    dy = 0;
+    initializeGameDimensions();
     generateFood();
+    mainGameLoop();
 }
 
+snakeSpeedInput.addEventListener('input', () => {
+    snakeSpeed = parseInt(snakeSpeedInput.value);
+    snakeSpeedValueSpan.textContent = `${snakeSpeed} мс`;
+    mainGameLoop();
+});
+
+snakeColorInput.addEventListener('input', () => {
+    snakeColor = snakeColorInput.value; 
+    drawSnake();
+});
+
+// Обработчик для выбора цвета еды
+foodColorInput.addEventListener('input', () => {
+    foodColor = foodColorInput.value;
+    drawFood();
+});
+
+fieldSizeInput.addEventListener('change', () => {
+    currentFieldSize = parseInt(fieldSizeInput.value);
+    initializeGameDimensions();
+    mainGameLoop();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeGameDimensions();
+    generateFood();
+    mainGameLoop();
+});
+
 document.addEventListener('keydown', changeDirection);
-generateFood();
-mainGameLoop();
