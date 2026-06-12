@@ -1,79 +1,432 @@
+/* --- Основные стили --- */
 body {
     font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Цвет по умолчанию */
     margin: 0;
     padding-top: 20px;
+    transition: background-color 0.5s ease; /* Плавное изменение фона body */
 }
 
 h1 {
     color: #333;
+    text-align: center; /* Выравниваем заголовок по центру */
 }
 
-#controls {
+/* --- Стили для Начального меню --- */
+#start-menu {
+    position: fixed; /* Фиксированное положение */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0; /* Соответствует фону body по умолчанию */
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    border-radius: 5px;
-}
-
-.control-group {
-    display: flex;
     align-items: center;
-    gap: 8px;
+    z-index: 1001; /* Выше игрового контента, ниже Game Over */
+    visibility: hidden; /* Скрыто по умолчанию */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease; /* Плавное появление/исчезновение */
 }
 
-.control-group label {
-    font-weight: bold;
+#start-menu.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+#start-menu h1 {
+    font-size: 3.5em; /* Крупный заголовок */
+    margin: 10px 0;
+    color: #333;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Легкая тень */
+}
+
+#start-menu p {
+    font-size: 1.3em;
     color: #555;
+    margin-bottom: 40px;
+    max-width: 500px; /* Ограничим ширину текста */
+    text-align: center;
 }
 
-.control-group input[type="range"] {
-    cursor: pointer;
+#game-logo {
+    max-width: 220px; /* Максимальная ширина логотипа */
+    height: auto; /* Сохраняет пропорции */
+    margin-bottom: 25px;
+    border-radius: 15px; /* Более скругленные углы */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Более выраженная тень */
+    border: 5px solid rgba(255, 255, 255, 0.5); /* Полупрозрачная белая рамка */
 }
 
-.control-group input[type="color"] {
+#start-game-button {
+    padding: 18px 40px; /* Крупнее кнопки */
+    font-size: 1.7em; /* Крупнее шрифт */
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #4CAF50, #45a049); /* Градиент */
     border: none;
-    background-color: transparent;
+    border-radius: 10px; /* Более скругленные углы */
     cursor: pointer;
-    padding: 0;
-    height: 25px;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Более заметная тень */
 }
 
-.control-group select {
-    padding: 5px;
-    border-radius: 3px;
-    border: 1px solid #ccc;
-    cursor: pointer;
+#start-game-button:hover {
+    background: linear-gradient(135deg, #45a049, #388e3c); /* Меняем градиент при наведении */
+    transform: translateY(-5px); /* Больше подъем */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Более выраженная тень */
 }
 
-#game-container {
-    border: 2px solid #333;
-    background-color: #fff;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+#start-game-button:active {
+    transform: translateY(0); /* Возврат при нажатии */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Возврат тени */
+}
+
+/* --- Игровой контент (скрыт по умолчанию) --- */
+#game-wrapper {
+    display: none;
+    width: 100%;
+}
+
+#game-wrapper.visible {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#game-canvas {
+/* --- ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ БЛОКА УПРАВЛЕНИЯ (#controls) --- */
+#controls {
+    display: grid; /* Используем grid для более гибкой компоновки */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Колонки подстраиваются */
+    gap: 25px; /* Расстояние между элементами */
+    margin-bottom: 25px;
+    padding: 20px;
+    border: 1px solid #dcdcdc; /* Более мягкая рамка */
+    background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Мягкая тень */
+    border-radius: 8px; /* Более скругленные углы */
+    max-width: 800px; /* Увеличим максимальную ширину */
+    width: 100%;
+    backdrop-filter: blur(5px); /* Небольшой эффект размытия фона (если поддерживается) */
+}
+
+/* --- ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ ГРУППЫ УПРАВЛЕНИЯ (.control-group) --- */
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Увеличим расстояние между элементами внутри группы */
+    justify-content: center; /* Центрируем элементы внутри группы */
+}
+
+.control-group label {
+    font-weight: bold;
+    color: #333; /* Более темный цвет текста */
+    white-space: nowrap;
+    font-size: 1.1em; /* Немного увеличим шрифт */
+}
+
+/* Стили для слайдера */
+.control-group input[type="range"] {
+    cursor: pointer;
+    width: 120px; /* Немного увеличим ширину слайдера */
+    height: 8px;
+    background: #e0e0e0; /* Фон трека слайдера */
+    border-radius: 4px;
+    outline: none;
+    appearance: none; /* Удаляем стандартный вид */
+    accent-color: #2196F3; /* Цвет ползунка (синий) */
+}
+
+/* Стили для ползунка слайдера (Chrome, Edge, Safari) */
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #2196F3; /* Цвет ползунка */
+    border-radius: 50%; /* Круглый ползунок */
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5); /* Тень для ползунка */
+}
+
+/* Стили для ползунка слайдера (Firefox) */
+.control-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #2196F3;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+/* Стили для input type="color" */
+.control-group input[type="color"] {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+    width: 35px; /* Увеличим размер квадрата цвета */
+    height: 35px;
+    border-radius: 5px; /* Слегка скруглим */
+    border: 2px solid #ccc; /* Добавим тонкую рамку */
+    transition: border-color 0.3s ease;
+}
+.control-group input[type="color"]:hover {
+    border-color: #2196F3; /* Подсветим рамку при наведении */
+}
+
+/* Стили для select (выпадающие списки) */
+.control-group select {
+    padding: 8px 12px; /* Увеличим padding */
+    border-radius: 5px;
     border: 1px solid #ccc;
-    background-color: #e9e9e9;
+    cursor: pointer;
+    font-size: 1em; /* Увеличим шрифт */
+    background-color: #fff; /* Белый фон */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.control-group select:hover {
+    border-color: #2196F3;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+/* --- Стили для кнопок управления игрой --- */
+#game-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px; /* Увеличим отступ */
+}
+
+#game-buttons button {
+    padding: 12px 25px; /* Увеличим padding */
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #4CAF50, #45a049); /* Зеленый градиент */
+    border: none;
+    border-radius: 8px; /* Скругленные углы */
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#game-buttons button:hover {
+    background: linear-gradient(135deg, #45a049, #388e3c);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+}
+
+#pause-button {
+    background: linear-gradient(135deg, #f44336, #da190b); /* Красный градиент */
+}
+
+#pause-button:hover {
+    background: linear-gradient(135deg, #da190b, #c62828);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Стили для игрового контейнера --- */
+#game-container {
+    position: relative;
+    border: 2px solid #333;
+    background-color: #fff; /* Цвет фона контейнера */
+    padding: 15px; /* Увеличим padding */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Более выраженная тень */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0;
+    border-radius: 10px; /* Скругленные углы контейнера */
+}
+
+#game-canvas {
+    border: 2px solid #ccc; /* Увеличим толщину рамки canvas */
+    background-color: #e9e9e9; /* Цвет фона canvas по умолчанию */
     display: block;
+    position: relative;
+    z-index: 1;
 }
 
 #score {
-    margin-top: 15px;
-    font-size: 1.2em;
+    margin-top: 20px; /* Увеличим отступ */
+    font-size: 1.3em; /* Увеличим шрифт */
     font-weight: bold;
     color: #555;
+}
+
+/* --- Экран Game Over --- */
+#game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002; /* Убедимся, что Game Over всегда поверх всего */
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease;
+}
+
+#game-over-screen.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.game-over-content {
+    background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный фон */
+    padding: 40px 50px; /* Увеличим padding */
+    border-radius: 15px; /* Более скругленные углы */
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Более выраженная тень */
+    border: 3px solid #f44336; /* Красная рамка */
+}
+
+.game-over-content h2 {
+    color: #f44336;
+    margin-bottom: 20px; /* Увеличим отступ */
+    font-size: 3em; /* Больше заголовок */
+}
+
+.game-over-content p {
+    font-size: 1.5em; /* Больше текст */
+    margin-bottom: 30px;
+    color: #333;
+}
+
+#final-score {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+#play-again-button {
+    padding: 15px 30px; /* Увеличим кнопки */
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #2196F3, #1976D2); /* Синий градиент */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+#play-again-button:hover {
+    background: linear-gradient(135deg, #1976D2, #0d47a1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Адаптивные стили --- */
+@media (max-width: 768px) {
+    #start-menu h1 { font-size: 2.8em; }
+    #start-menu p { font-size: 1.1em; margin-bottom: 20px; }
+    #game-logo { max-width: 180px; margin-bottom: 15px; }
+    #start-game-button { padding: 15px 30px; font-size: 1.4em; }
+
+    #controls {
+        grid-template-columns: 1fr; /* Все элементы управления в одну колонку */
+        gap: 15px;
+        padding: 15px;
+    }
+    .control-group {
+        justify-content: space-between; /* Расставляем метку и элемент управления */
+        flex-wrap: wrap; /* Позволяет переноситься */
+    }
+    .control-group label {
+        flex-basis: 150px; /* Фиксированная ширина метки */
+        margin-bottom: 5px; /* Отступ снизу */
+    }
+    .control-group input[type="range"],
+    .control-group select,
+    .control-group input[type="color"] {
+        flex-grow: 1; /* Элементы управления растягиваются */
+        max-width: 200px; /* Ограничиваем ширину */
+        width: auto; /* Сбрасываем width: 100px; */
+    }
+
+    #game-buttons {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%; /* Занимаем всю ширину */
+        max-width: 300px; /* Ограничиваем ширину */
+    }
+    #game-buttons button {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1.2em;
+    }
+
+    .game-over-content {
+        padding: 25px 30px;
+    }
+    .game-over-content h2 {
+        font-size: 2.2em;
+    }
+    .game-over-content p {
+        font-size: 1.3em;
+    }
+    #play-again-button {
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    #start-menu h1 { font-size: 2.2em; }
+    #start-menu p { font-size: 1em; margin-bottom: 20px; }
+    #game-logo { max-width: 150px; margin-bottom: 15px; }
+    #start-game-button { padding: 12px 25px; font-size: 1.2em; }
+
+    #controls {
+        gap: 15px;
+        padding: 10px;
+    }
+    .control-group label {
+        flex-basis: 120px;
+    }
+    .control-group input[type="range"],
+    .control-group select,
+    .control-group input[type="color"] {
+        max-width: 160px;
+    }
+    #game-buttons button {
+        font-size: 1.1em;
+    }
+    .game-over-content {
+        padding: 20px 25px;
+    }
+    .game-over-content h2 {
+        font-size: 2em;
+    }
+    .game-over-content p {
+        font-size: 1.2em;
+    }
+    #play-again-button {
+        padding: 8px 18px;
+        font-size: 1em;
+    }
+}
+
+/* --- Адаптивные стили для Canvas и Game Container --- */
+#game-container {
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 10px; /* Скругленные углы контейнера */
+}
+
+#game-canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 5px; /* Скругленные углы canvas */
 }

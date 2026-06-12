@@ -7,38 +7,72 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Игра Змейка</h1>
-
-    <div id="controls">
-        <div class="control-group">
-            <label for="snake-speed">Скорость:</label>
-            <input type="range" id="snake-speed" min="50" max="500" value="150">
-            <span id="snake-speed-value">150 мс</span>
-        </div>
-
-        <div class="control-group">
-            <label for="snake-color">Цвет змейки:</label>
-            <input type="color" id="snake-color" value="#8FBC8F"> <!-- DarkSeaGreen -->
-        </div>
-
-        <div class="control-group">
-            <label for="food-color">Цвет еды:</label>
-            <input type="color" id="food-color" value="#FF6347"> <!-- Tomato -->
-        </div>
-
-        <div class="control-group">
-            <label for="field-size">Размер поля (клеток):</label>
-            <select id="field-size">
-                <option value="20">20x20</option>
-                <option value="25" selected>25x25</option>
-                <option value="30">30x30</option>
-            </select>
-        </div>
+    <!-- НОВОЕ: Начальное меню -->
+    <div id="start-menu">
+        <img src="" alt="Логотип игры" id="game-logo"> <!-- Замените 'logo.png' на путь к вашему логотипу -->
+        <h1>Игра Змейка</h1>
+        <p>Классическая игра "Змейка". Управляйте стрелками.</p>
+        <button id="start-game-button">Начать игру</button>
     </div>
 
-    <div id="game-container">
-        <canvas id="game-canvas"></canvas>
-        <div id="score">Очки: 0</div>
+    <!-- Основной контент игры (будет скрыт до старта) -->
+    <div id="game-wrapper">
+        <h1>Игра Змейка</h1>
+
+        <div id="controls">
+            <!-- ... (ваши существующие элементы управления) ... -->
+            <div class="control-group">
+                <label for="snake-speed">Скорость:</label>
+                <input type="range" id="snake-speed" min="50" max="500" value="150">
+                <span id="snake-speed-value">150 мс</span>
+            </div>
+
+            <div class="control-group">
+                <label for="snake-color">Цвет змейки:</label>
+                <input type="color" id="snake-color" value="#8FBC8F">
+            </div>
+
+            <div class="control-group">
+                <label for="food-color">Цвет еды:</label>
+                <input type="color" id="food-color" value="#FF6347">
+            </div>
+
+            <div class="control-group">
+                <label for="field-size">Размер поля (клеток):</label>
+                <select id="field-size">
+                    <option value="20">20x20</option>
+                    <option value="25" selected>25x25</option>
+                    <option value="30">30x30</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="theme-select">Тема:</label>
+                <select id="theme-select">
+                    <option value="classic">Классическая</option>
+                    <option value="space">Космическая</option>
+                    <option value="forest">Лесная</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="game-buttons">
+            <button id="pause-button">Пауза</button>
+            <button id="restart-button">Новая игра</button>
+        </div>
+
+        <div id="game-container">
+            <canvas id="game-canvas"></canvas>
+            <div id="score">Очки: 0</div>
+        </div>
+
+        <div id="game-over-screen">
+            <div class="game-over-content">
+                <h2>Игра Окончена!</h2>
+                <p>Ваш счет: <span id="final-score">0</span></p>
+                <button id="play-again-button">Сыграть еще раз</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
